@@ -121,7 +121,7 @@ library/Application.php:
 ###4. Render
 Finally, it's time to put everything together and send the response back to the browser. For my example framework, this is the simplest of all steps. But it can get pretty involved in a full-scale framework!
 
-*Here we one example of the "V" part of MVC. Notice that all of the program logic is completed outside of the view. Views should contain as little logic as possible (loops are about as complicated as it should get), so you can keep the html, css, javascript, etc. as clean and maintainable as possible.*
+*Here is one example of the "V" part of MVC. Notice that all of the program logic is completed outside of the view. Views should contain as little logic as possible (loops are about as complicated as it should get), so you can keep the html, css, javascript, etc. as clean and maintainable as possible.*
 
 library/Application.php
 ```
