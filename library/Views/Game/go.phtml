@@ -1,0 +1,217 @@
+<h4>No model here, just some javascript</h4>
+
+<canvas id="goboard" name="goboard" width="890" height="890"></canvas>
+
+
+<script language="JavaScript" type="text/javascript">
+<!-- //
+	var Go = {
+		nextMove : 'black'
+	};
+
+	Go.board = {
+		size : 19, // breaks if > 25
+		margin : 30,
+		bgColor : '#FFA54F'
+	}
+
+	Go.apply = function(o, c){
+		if(o && c && typeof c == 'object'){
+			for(var prop in c){
+				o[prop] = c[prop];
+			}
+		}
+		return o;
+	};
+
+	Go.apply(Go.board, {
+		xLabel : 'abcdefghjklmnopqrstuvwxyz',
+		map : new Array(),
+		stoneWidth : 0,
+		stoneHeight : 0,
+
+		getStarPoints : function(){
+			// I'd like an algorithm for this
+			var result = new Array();
+			switch (this.size){
+				case 19:
+					result.push([4,4],[10,4],[16,4],[4,10],[10,10],[16,10],[4,16],[10,16],[16,16]);
+					break;
+				case 13:
+					result.push([4,4],[10,4],[7,7],[4,10],[10,10]);
+					break;
+				case 9:
+					result.push([3,3],[7,3],[5,5],[3,7],[7,7]);
+					break;
+			}
+			return result;
+		},
+
+		getCoords : function(x,y){
+			return this.map[x][y];
+		},
+
+		buildMap : function(){
+			var m = (this.margin||0);
+			var hLineGap = (Go.canvas.height-(m*2))/(this.size-1);
+			var vLineGap = (Go.canvas.width-(m*2))/(this.size-1);
+			var x, y, lat, lon;
+
+			// a convenient moment to determine stone size.
+			this.stoneWidth  = vLineGap/2;
+			this.stoneHeight = hLineGap/2;
+
+			for (lon=0; lon<this.size; lon++){
+				x = (lon*vLineGap)+m;
+				this.map[lon+1] = [];
+				for (lat=0; lat<this.size; lat++){
+					y = (lat*hLineGap)+m;
+					this.map[lon+1][lat+1] = [x,y];
+				}
+			}
+		},
+
+		drawBackground : function(){
+			var c = Go.cxt;
+			c.fillStyle = this.bgColor;
+			c.fillRect(0,0,Go.canvas.width, Go.canvas.height);
+		},
+
+		drawStone : function(x,y,color){
+			var coords = this.getCoords(x,y);
+			if (undefined==coords){return false;}
+			var c = Go.cxt;
+
+			if (!color){
+				color = Go.nextMove;
+				Go.nextMove = (color=='black')?'white':'black';
+			}
+
+			c.beginPath();
+			c.arc(coords[0],coords[1],this.stoneWidth,0,Math.PI*2,true);
+			c.fillStyle = color;
+			c.fill();
+			c.stroke();
+		},
+
+		drawStar : function(x,y){
+			var coords = this.getCoords(x,y);
+			if (undefined==coords){return false;}
+			var c = Go.cxt;
+
+			c.beginPath();
+			c.arc(coords[0],coords[1],4,0,Math.PI*2,true);
+			c.fillStyle = 'black';
+			c.fill();
+			c.stroke();
+		},
+
+		drawStars : function(){
+			var stars = this.getStarPoints();
+
+			for (var i=0; i<stars.length; i++){
+				star = stars[i];
+				this.drawStar(star[0], star[1]);
+			}
+		},
+
+		drawLines : function(){
+			var c = Go.cxt, fc, tc;
+
+			for (var i=1; i<=this.size; i++){
+				c.beginPath();
+				fc = this.getCoords(1, i);
+				tc = this.getCoords(this.size, i);
+				c.moveTo(fc[0], fc[1]);
+				c.lineTo(tc[0], tc[1]);
+				c.stroke();
+			}
+
+			for (var i=1; i<=this.size; i++){
+				c.beginPath();
+				fc = this.getCoords(i, 1);
+				tc = this.getCoords(i, this.size);
+				c.moveTo(fc[0], fc[1]);
+				c.lineTo(tc[0], tc[1]);
+				c.stroke();
+			}
+		},
+
+		drawLabels : function(){
+			var c = Go.cxt, f1, f2;
+
+			c.textAlign = 'center';
+			c.textBaseline = 'middle';
+
+			for (var i=1; i<=this.size; i++){
+				f1 = this.getCoords(i, 1);
+				f2 = this.getCoords(i, this.size);
+				c.strokeText(this.xLabel.charAt(i-1).toUpperCase(), f1[0], f1[1]-(this.margin/2));
+				c.strokeText(this.xLabel.charAt(i-1).toUpperCase(), f2[0], f2[1]+(this.margin/2));
+			}
+
+			for (var i=1; i<=this.size; i++){
+				f1 = this.getCoords(1, i);
+				f2 = this.getCoords(this.size, i);
+				c.strokeText(i, f1[0]-(this.margin/2), f1[1]);
+				c.strokeText(i, f2[0]+(this.margin/2), f2[1]);
+			}
+		},
+
+		monitorMouseMove : function(e){
+			var x, y, mx, my,
+			sw = Go.board.stoneWidth,
+			sh = Go.board.stoneHeight;
+
+			if(e.offsetX) {
+				mx = e.offsetX;
+				my = e.offsetY;
+			}
+			else if(e.layerX) {
+				mx = e.layerX;
+				my = e.layerY;
+			}
+
+			x = Math.round((mx+(sw/2))/(2*sw));
+			y = Math.round((my+(sw/2))/(2*sh));
+		},
+
+		monitorMouseClick : function(e){
+			// this isn't really perfected..
+			var x, y, mx, my,
+			sw = Go.board.stoneWidth,
+			sh = Go.board.stoneHeight,
+			m = Go.board.margin;
+
+			if(e.offsetX) {
+				mx = e.offsetX;
+				my = e.offsetY;
+			}
+			else if(e.layerX) {
+				mx = e.layerX;
+				my = e.layerY;
+			}
+
+			x = Math.round((mx+(m/2)+(sw/2))/(2*sw));
+			y = Math.round((my+(m/2)+(sw/2))/(2*sh));
+
+			Go.board.drawStone(x,y);
+		}
+	});
+
+	var start = function(){
+		Go.canvas = document.getElementById('goboard');
+		Go.canvas.onmousemove = Go.board.monitorMouseMove;
+		Go.canvas.onclick = Go.board.monitorMouseClick;
+		Go.cxt = Go.canvas.getContext('2d');
+
+		Go.board.buildMap();
+		Go.board.drawBackground();
+		Go.board.drawLines();
+		Go.board.drawStars();
+		Go.board.drawLabels();
+	}
+
+    start();
+// -->
+</script>
