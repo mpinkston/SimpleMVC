@@ -135,7 +135,7 @@ library/Application.php
 ##The Design Pattern - MVC
 In the above section, I described how the framework Bootstraps, Routes, Dispatches, and Renders. Keep in mind that this doesn't necessarily mean it's using an MVC design pattern. Routing could have been used to identify any type of resource, Dispatch could have executed any arbitrary code, and Render could have had all the html code mixed right in with the method.
 
-But this doesn't mean that the MVC pattern is completely independent of the framework either. As a design pattern, it refers more to how the code is organized to handle certain responsibilities than to the code itself.
+But this doesn't mean that the MVC pattern is completely independent of the framework either. As a design pattern, it refers more to how the code is organized for handling certain responsibilities than to the code itself.
 
 I won't go into too much depth on this for fear that I may be eaten alive by orthodox design-pattern zealots. But if there's one man who can speak with any authority on design patterns, it's Martin Fowler. 
 
