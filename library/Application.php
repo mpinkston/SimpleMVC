@@ -118,7 +118,7 @@ class Application
     }
 
     /**
-     * Print the response
+     * Get the response, and display it within the layout
      */
     protected function render()
     {
