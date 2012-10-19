@@ -147,16 +147,5 @@ Nonetheless, I did include three directories in the "library/" folder named "Con
 
 By the way, If you've ever written a UML "Class" diagram and wondered how those classes could ever be used in real code, look in the Models directory.  This is roughly how the class diagram might look for my super-simple application:
 
-```
- -------------
-|  BlogEntry  |
-|  ---------  |
-|  -title     |
-|  -text      |
-| ----------- |
-| +setTitle() |
-| +getTitle() |
-| +setText()  |
-| +getText()  |
- -------------
-```
+
+![Class Diagram](https://raw.github.com/mpinkston/SimpleMVC/master/public/images/ClassDiagram.png)
